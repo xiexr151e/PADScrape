@@ -21,27 +21,19 @@ def main():
 		numbers = []
 		names = []
 
-		# Find all the numbers and format properly
-		for number in soup.find_all('div','num'):
-			number = int(number.text.strip()[3:])
-
-			# If already added, then skip
-			if number not in cardBook.keys():
-				numbers.append(number)
-
-		# Find names within a specific region of the HTML file
+		# Find numbers and names within a specific region of the HTML file
 		for ul in soup.find_all('ul', {'class' : 'list-box mb-3 spacer'}):
-			for name in ul.find_all('div','name'):
 
-				# Format
-				name = name.text.strip()
+			for li in ul.find_all('li'):
 
-				# If already added, then skip;
-				# additionally, add any unknown names to preserve parallel structure
-				if name == '不明' or name not in cardBook.values():
-					names.append(name)
+				number = li.find('div', 'num').text.strip()[3:]
+				name = li.find('div', 'name').text.strip()
+
+				if name != '不明':
+					print("{}: {}".format(number, name))
 
 		# Build/append the dictionary
+		'''
 		for i in range(len(names)):
 
 			print("{}: {}".format(numbers[i], names[i]))
@@ -49,6 +41,7 @@ def main():
 			# Skip if unknown name
 			if names[i] != '不明':
 				cardBook[numbers[i]] = names[i]
+		'''
 
 	'''
 	for number in cardBook.keys():
