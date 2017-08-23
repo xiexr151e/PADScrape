@@ -5,11 +5,16 @@ class Monster:
 	'''
 	Class ctor
 	'''
-	def __init__(self, name, number, evolutions, object):
+	def __init__(self, name, number, preEvo, evolutions, object):
 
 		# Obvious params
 		self.name = name
 		self.number = number
+
+		# Less obvious, but we might need this for hashing
+		# This will always be one value because no two monsters
+		# can ever converge/evolve into one same monsters
+		self.preEvo = preEvo
 
 		# This will probably be an array of tuples(str key, arr value), 
 		# one tuple per split evolution
@@ -22,7 +27,8 @@ class Monster:
 		# Some debug tests
 		self.getName()
 		self.getNum()
-		self.getEvo()
+		self.getPreEvo()
+		#self.getEvo()
 
 	'''
 	Returns the name of monster
@@ -31,7 +37,7 @@ class Monster:
 
 		# Debug name
 		if self.debug:
-			print("My name is {}".format(self.name))
+			print("My name is {}.".format(self.name))
 
 		return self.name
 
@@ -42,9 +48,24 @@ class Monster:
 
 		# Debug number
 		if self.debug:
-			print("My number is {}".format(self.number))
+			print("My number is {}.".format(self.number))
 
 		return self.number
+
+	'''
+	Returns the pre-evolution
+	'''
+	def getPreEvo(self):
+
+		# Debug number
+		if self.debug:
+
+			if not self.preEvo:
+				print("I don't evolve from anything.")
+			else:
+				print("I evolve from {}.".format(self.preEvo))
+
+		return self.preEvo
 
 	'''
 	Return evo name and its materials
@@ -98,7 +119,7 @@ class Monster:
 		# Recursively search in this tree...
 		# For now, we can use 2D arrays, but once the
 	  	# evolution tree gets too complex, we need to change this
-		for i in range(len(self.evolutions)):
+		#for i in range(len(self.evolutions)):
 			
 
 	'''
@@ -115,11 +136,11 @@ class Monster:
 			return
 		
 		#Do the recursive search
-		for i in range(len(self.evolutions)):
+		#for i in range(len(self.evolutions)):
 
 DEBUG_ON = 1
 DEBUG_OFF = 0
 
 Debugger = Object("A", DEBUG_ON)
-Hino = Monster("Kagutsuchi", 132, [("Hino Kagutsuchi", ["Red Mask", "Mythlit", "Mythlit", "Keeper of Red", "Keeper of Red"])], Debugger)
-Andromeda = Monster("Andromeda", 420, [("Big Andromeda", ["Keeper of Gold", "Blue Mask", "Blue Jewel"]), [("Awoken Andromeda"), ["Ilsix", "Gaia"]]], Debugger)
+#Hino = Monster("Kagutsuchi", 132, [("Hino Kagutsuchi", ["Red Mask", "Mythlit", "Mythlit", "Keeper of Red", "Keeper of Red"])], Debugger)
+#Andromeda = Monster("Andromeda", 420, [("Big Andromeda", ["Keeper of Gold", "Blue Mask", "Blue Jewel"]), [("Awoken Andromeda"), ["Ilsix", "Gaia"]]], Debugger)
