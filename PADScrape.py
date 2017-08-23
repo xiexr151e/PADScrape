@@ -3,17 +3,17 @@ import requests
 from bs4 import BeautifulSoup
 
 # Separate class made by yours truly
-from monster import Monster, DEBUG_ON, DEBUG_OFF, Debugger
+from monster import Monster
 
 # Unused for now; will use for persistence
 import pickle
 
-# Take in command line args
-import sys
-
-
+# Constants
 LIMIT = 3879 # Presently the last number in the PAD JP
 cardPerPage = 100 # Number of cards per page, if all cards are known
+firstPage = 1
+
+# Variables
 lastPage = int(LIMIT / cardPerPage) + 1 
 
 # String constants. Shouldn't need to change these
@@ -29,17 +29,19 @@ cardBook = {}
 '''
 Main scrape function, used to scrape the entire website
 '''
-def scrape():
+def scrape(debug):
 
 	# Iterate over every page; add 1 to lastPage because the second
 	# number is excluded from the iteration
+
+	# for currentPage in range(firstPage, lastPage + 1):
 	for currentPage in range(38, 39):
-		scrapePage(currentPage)
+		scrapePage(currentPage, debug)
 
 '''
 Scrapes each page of the "table of contents" of the website
 '''
-def scrapePage(pageNumber):
+def scrapePage(pageNumber, debug):
 
 	# Alternate webpage in each for loop
 	PADpage = "{}{}".format(PAGE_FORMAT, pageNumber)
@@ -64,7 +66,7 @@ def scrapePage(pageNumber):
 
 				# Redirect to next function, which will help
 				# to construct a new card
-				newMonster = scrapeEntry(name, number)
+				newMonster = scrapeEntry(name, number, debug)
 
 				# Append this new card into the dictionary
 				cardBook[number] = newMonster
@@ -72,7 +74,7 @@ def scrapePage(pageNumber):
 '''
 Scrapes individual entries within each page
 '''
-def scrapeEntry(entryName, entryNumber):
+def scrapeEntry(entryName, entryNumber, debug):
 
 	# Empty variables used to help construct the card
 	pre_evo = None
@@ -105,10 +107,10 @@ def scrapeEntry(entryName, entryNumber):
 		if title and (EVOLVE in title or UEVO in title):
 
 			# Redirect to another function if evolution is possible
-			scrapeEvo(div.find_all('table', 'table mb-3'))
+			evos = scrapeEvo(div.find_all('table', 'table mb-3'))
 
 	# At the end, construct a card and return it
-	return Monster(entryName, entryNumber, pre_evo, evos, Debugger)
+	return Monster(entryName, entryNumber, pre_evo, evos, debug)
 
 '''
 Scrapes only the pre-evo section
@@ -183,6 +185,3 @@ def scrapeMats(evoMatSection):
 
 	# Returns an array of parsed numbers in strings
 	return mats
-
-
-scrape()

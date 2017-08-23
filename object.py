@@ -7,6 +7,12 @@ class Object(ABC):
 		self.debug = debug
 
 	'''
+	Lets us set the debug flag
+	'''
+	def set_debug(self, debug):
+		self.debug = debug
+
+	'''
 	An abstract function - this base function can be used to
 	recursively search and print things. I have pre-requisites in mind.
 	'''

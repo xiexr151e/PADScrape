@@ -28,7 +28,7 @@ class Monster:
 		self.getName()
 		self.getNum()
 		self.getPreEvo()
-		#self.getEvo()
+		self.getEvo()
 
 	'''
 	Returns the name of monster
@@ -76,51 +76,31 @@ class Monster:
 		if self.debug:
 
 			# Print out every dictionary
-			for i in range(len(self.evolutions)):
-				branch = self.evolutions[i]
+			for evoName in self.evolutions.keys():
 
 				# Building onto this string...
 				evoStr = ''
 
 				# Retrieve the values of this key, which should be the evo name
-				evoName = branch[0]
-				evoList = branch[1]
+				evoList = self.evolutions[evoName]
 
 				# Build a string for this branch
 				for j in range(len(evoList)):
-
 					evoStr += evoList[j]
 
 					# Some special hard-coded things because English
 					if j == len(evoList) - 1:
 						evoStr += '.'
-
 					else:
 						evoStr += ', '
 
 						if j == len(evoList) - 2:
 							evoStr += 'and '
 
+				# The completed print statement here
 				print("To evolve {} into {}, you need: {}".format(self.name, evoName, evoStr))
 
-		return self.evolutions
-
-	'''
-	Makes a "chain" we can use for the search function.
-	current - The current item we are on. Unused for now.
-	target - The target we are reaching for.
-	book - The book to search in.
-	arr - The arr to store the chain.
-	'''
-	def getChain(self, current, target, book, arr):
-
-		tree = [[self]]
-
-		# Recursively search in this tree...
-		# For now, we can use 2D arrays, but once the
-	  	# evolution tree gets too complex, we need to change this
-		#for i in range(len(self.evolutions)):
-			
+		return self.evolutions			
 
 	'''
 	A search function - we use this to recursively search for stuff in a dictionary.
@@ -137,10 +117,3 @@ class Monster:
 		
 		#Do the recursive search
 		#for i in range(len(self.evolutions)):
-
-DEBUG_ON = 1
-DEBUG_OFF = 0
-
-Debugger = Object("A", DEBUG_ON)
-#Hino = Monster("Kagutsuchi", 132, [("Hino Kagutsuchi", ["Red Mask", "Mythlit", "Mythlit", "Keeper of Red", "Keeper of Red"])], Debugger)
-#Andromeda = Monster("Andromeda", 420, [("Big Andromeda", ["Keeper of Gold", "Blue Mask", "Blue Jewel"]), [("Awoken Andromeda"), ["Ilsix", "Gaia"]]], Debugger)
