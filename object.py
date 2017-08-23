@@ -13,6 +13,12 @@ class Object(ABC):
 		self.debug = debug
 
 	'''
+	Get the debug flag
+	'''
+	def debug_on(self):
+		return self.debug
+
+	'''
 	An abstract function - this base function can be used to
 	recursively search and print things. I have pre-requisites in mind.
 	'''

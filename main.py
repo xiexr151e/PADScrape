@@ -25,5 +25,7 @@ elif len(sys.argv) != 1:
 	print("Usage: python3 main.py [-x]")
 	sys.exit(1)
 
-# Execute
+# Load assets and execute
+PADScrape.loadBook(debugger)
 PADScrape.scrape(debugger)
+PADScrape.saveBook(debugger)
