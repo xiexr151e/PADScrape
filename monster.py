@@ -1,11 +1,14 @@
 from object import Object
 
+# Debug switch
+debug = 0
+
 class Monster:
 
 	'''
 	Class ctor
 	'''
-	def __init__(self, name, number, preEvo, evolutions, object):
+	def __init__(self, name, number, preEvo, evolutions):
 
 		# Obvious params
 		self.name = name
@@ -21,9 +24,6 @@ class Monster:
 		# i.e. Ney will have 5, Scheat will have 2, Mythlit will have 0
 		self.post = evolutions
 
-		# Debug flag for all your message goods
-		self.debug = object.debug
-
 		# Some debug tests
 		self.getName()
 		self.getID()
@@ -36,7 +36,7 @@ class Monster:
 	def getName(self):
 
 		# Debug name
-		if self.debug:
+		if debug:
 			print("My name is {}.".format(self.name))
 
 		return self.name
@@ -47,7 +47,7 @@ class Monster:
 	def getID(self):
 
 		# Debug number
-		if self.debug:
+		if debug:
 			print("My number is {}.".format(self.ID))
 
 		return self.ID
@@ -58,7 +58,7 @@ class Monster:
 	def getPre(self):
 
 		# Debug number
-		if self.debug:
+		if debug:
 
 			if not self.pre:
 				print("I don't evolve from anything.")
@@ -73,7 +73,7 @@ class Monster:
 	def getPost(self):
 
 		# Debug evo and materials
-		if self.debug:
+		if debug:
 
 			# Print out every dictionary
 			for evoName in self.post.keys():

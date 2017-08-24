@@ -4,16 +4,19 @@ Contains functions that load or save files, and other operations
 import pickle
 import os
 
+# Debug switch
+debug = 0
+
 '''
 Load a saved dictionary, or make a new one if none exists
 '''
-def loadBook(bookName, debug):
+def loadBook(bookName):
 
 	# Get the current directory of this script
 	currentDir = os.path.dirname(os.path.abspath(__file__))
 	dictPath = currentDir + "/{}".format(bookName)
 
-	if debug.debug_on:
+	if debug:
 		print("Attempting to find dictionary at {}...".format(dictPath))
 
 	# Try to see if the dictionary file exists
@@ -21,11 +24,11 @@ def loadBook(bookName, debug):
 
 	# Not found? No problem
 	if not dict_on_disk:
-		if debug.debug_on:
+		if debug:
 			print("Dictionary does not exist on disk! We will make a new one.")
-			return {}
+		return {}
 	else:
-		if debug.debug_on:
+		if debug:
 			print("Dictionary exists on disk! Loading dictionary...")
 
 		# Load this dictionary
@@ -35,9 +38,9 @@ def loadBook(bookName, debug):
 '''
 Saves dictionary to file
 '''
-def saveBook(book, bookName, debug):
+def saveBook(book, bookName):
 
-	if debug.debug_on:
+	if debug:
 		print("Dictionary is complete. Saving dictionary...")
 
 	# Save this dictionary to a file

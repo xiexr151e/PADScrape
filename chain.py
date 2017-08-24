@@ -52,7 +52,7 @@ Prints a dictionary
 def printDict(book):
 	keys = sorted(book.keys())
 	for key in keys:
-		print("{}".format(book[key].toString()))
+		print("{}. {}".format(book[key].getID(), book[key].getName()))
 
 '''
 The sequence of events

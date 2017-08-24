@@ -24,7 +24,7 @@ UEVO = "究極進化"
 '''
 Main scrape function, used to scrape the entire website
 '''
-def scrape(book, debug):
+def scrape(book):
 
 	# Iterate over every page; add 1 to lastPage because the second
 	# number is excluded from the iteration
@@ -33,7 +33,7 @@ def scrape(book, debug):
 
 	for currentPage in range(firstPage, lastPage + 1):
 	#for currentPage in range(38, 39):
-		scrapePage(currentPage, book, debug)
+		scrapePage(currentPage, book)
 
 	newLen = len(book)
 
@@ -42,7 +42,7 @@ def scrape(book, debug):
 '''
 Scrapes each page of the "table of contents" of the website
 '''
-def scrapePage(pageNumber, book, debug):
+def scrapePage(pageNumber, book):
 
 	# Alternate webpage in each for loop
 	PADpage = "{}{}".format(PAGE_FORMAT, pageNumber)
@@ -64,7 +64,7 @@ def scrapePage(pageNumber, book, debug):
 
 				# Redirect to next function, which will help
 				# to construct a new card
-				newMonster = scrapeEntry(name, number, debug)
+				newMonster = scrapeEntry(name, number)
 
 				# Append this new card into the dictionary
 				book[number] = newMonster
@@ -72,7 +72,7 @@ def scrapePage(pageNumber, book, debug):
 '''
 Scrapes individual entries within each page
 '''
-def scrapeEntry(entryName, entryNumber, debug):
+def scrapeEntry(entryName, entryNumber):
 
 	# Empty variables used to help construct the card
 	pre_evo = None
@@ -108,7 +108,7 @@ def scrapeEntry(entryName, entryNumber, debug):
 			evos = scrapeEvo(div.find_all('table', 'table mb-3'))
 
 	# At the end, construct a card and return it
-	return Monster(entryName, entryNumber, pre_evo, evos, debug)
+	return Monster(entryName, entryNumber, pre_evo, evos)
 
 '''
 Scrapes only the pre-evo section
