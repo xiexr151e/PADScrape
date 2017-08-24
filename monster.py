@@ -9,26 +9,26 @@ class Monster:
 
 		# Obvious params
 		self.name = name
-		self.number = number
+		self.ID = number
 
 		# Less obvious, but we might need this for hashing
 		# This will always be one value because no two monsters
 		# can ever converge/evolve into one same monsters
-		self.preEvo = preEvo
+		self.pre = preEvo
 
 		# This will probably be an array of tuples(str key, arr value), 
 		# one tuple per split evolution
 		# i.e. Ney will have 5, Scheat will have 2, Mythlit will have 0
-		self.evolutions = evolutions
+		self.post = evolutions
 
 		# Debug flag for all your message goods
 		self.debug = object.debug
 
 		# Some debug tests
 		self.getName()
-		self.getNum()
-		self.getPreEvo()
-		self.getEvo()
+		self.getID()
+		self.getPre()
+		self.getPost()
 
 	'''
 	Returns the name of monster
@@ -44,45 +44,45 @@ class Monster:
 	'''
 	Returns the number of monster
 	'''
-	def getNum(self):
+	def getID(self):
 
 		# Debug number
 		if self.debug:
-			print("My number is {}.".format(self.number))
+			print("My number is {}.".format(self.ID))
 
-		return self.number
+		return self.ID
 
 	'''
 	Returns the pre-evolution
 	'''
-	def getPreEvo(self):
+	def getPre(self):
 
 		# Debug number
 		if self.debug:
 
-			if not self.preEvo:
+			if not self.pre:
 				print("I don't evolve from anything.")
 			else:
-				print("I evolve from {}.".format(self.preEvo))
+				print("I evolve from {}.".format(self.pre))
 
-		return self.preEvo
+		return self.pre
 
 	'''
 	Return evo name and its materials
 	'''
-	def getEvo(self):
+	def getPost(self):
 
 		# Debug evo and materials
 		if self.debug:
 
 			# Print out every dictionary
-			for evoName in self.evolutions.keys():
+			for evoName in self.post.keys():
 
 				# Building onto this string...
 				evoStr = ''
 
 				# Retrieve the values of this key, which should be the evo name
-				evoList = self.evolutions[evoName]
+				evoList = self.post[evoName]
 
 				# Build a string for this branch
 				for j in range(len(evoList)):
@@ -100,7 +100,7 @@ class Monster:
 				# The completed print statement here
 				print("To evolve {} into {}, you need: {}".format(self.name, evoName, evoStr))
 
-		return self.evolutions			
+		return self.post		
 
 	'''
 	A search function - we use this to recursively search for stuff in a dictionary.
@@ -117,3 +117,9 @@ class Monster:
 		
 		#Do the recursive search
 		#for i in range(len(self.evolutions)):
+
+	'''
+	Return a string representation of monster
+	'''
+	def toString(self):
+		print("{}: {}".format(self.getID(), self.getName()))

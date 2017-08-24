@@ -1,13 +1,10 @@
-# To get our website data
+'''
+The scraper
+'''
+
 import requests
 from bs4 import BeautifulSoup
-
-# Separate class made by yours truly
 from monster import Monster
-
-# Unused for now; will use for persistence
-import pickle
-import os
 
 # Constants
 LIMIT = 3879 # Presently the last number in the PAD JP
@@ -16,7 +13,6 @@ firstPage = 1
 
 # Variables and switches
 lastPage = int(LIMIT / cardPerPage) + 1
-dict_on_disk = 1 
 
 # String constants. Shouldn't need to change these
 PAGE_FORMAT = "http://pd.appbank.net/ml"
@@ -24,57 +20,29 @@ ENTRY_FORMAT = "http://pd.appbank.net/m"
 UNKNOWN = "不明"
 EVOLVE = "進化合成"
 UEVO = "究極進化"
-BOOK_NAME = "cardbook"
-
-# Dictionary to save the names and numbers of cards
-cardBook = {}
-
-'''
-Load a saved dictionary, or make a new one if none exists
-'''
-def loadBook(debug):
-
-	# Get the current directory of this script
-	currentDir = os.path.dirname(os.path.abspath(__file__))
-	dictPath = currentDir + "/{}".format(BOOK_NAME)
-
-	if debug.debug_on:
-		print("Attempting to find dictionary at {}...".format(dictPath))
-
-	# Try to see if the dictionary file exists
-	dict_on_disk = os.path.isfile(dictPath)
-
-	# Not found? No problem
-	if not dict_on_disk:
-		if debug.debug_on:
-			print("Dictionary does not exist on disk! We will make a new one.")
-	else:
-		if debug.debug_on:
-			print("Dictionary exists on disk! Loading dictionary...")
-
-		# Load this dictionary
-		with open(BOOK_NAME, "rb") as f:
-
-			# We must replace the topmost empty dictionary if one exists
-			global cardBook
-			cardBook = pickle.load(f)
 
 '''
 Main scrape function, used to scrape the entire website
 '''
-def scrape(debug):
+def scrape(book, debug):
 
 	# Iterate over every page; add 1 to lastPage because the second
 	# number is excluded from the iteration
 
+	oldLen = len(book)
+
 	for currentPage in range(firstPage, lastPage + 1):
 	#for currentPage in range(38, 39):
-		scrapePage(currentPage, debug)
+		scrapePage(currentPage, book, debug)
+
+	newLen = len(book)
+
+	print("{} new monsters added.".format(newLen - oldLen))
 
 '''
 Scrapes each page of the "table of contents" of the website
 '''
-def scrapePage(pageNumber, debug):
+def scrapePage(pageNumber, book, debug):
 
 	# Alternate webpage in each for loop
 	PADpage = "{}{}".format(PAGE_FORMAT, pageNumber)
@@ -91,18 +59,15 @@ def scrapePage(pageNumber, debug):
 			# Directly strip the tags without modification
 			name = li.find('div', 'name').text.strip()
 
-			# Referring to topmost dictionary
-			global cardBook
-
 			# If entry is new and known, then gather some more info
-			if number not in cardBook.keys() and name != UNKNOWN:
+			if number not in book.keys() and name != UNKNOWN:
 
 				# Redirect to next function, which will help
 				# to construct a new card
 				newMonster = scrapeEntry(name, number, debug)
 
 				# Append this new card into the dictionary
-				cardBook[number] = newMonster
+				book[number] = newMonster
 
 '''
 Scrapes individual entries within each page
@@ -114,7 +79,7 @@ def scrapeEntry(entryName, entryNumber, debug):
 	evos = {}
 
 	# Just a debug statement
-	#print("New card: {}. {}".format(entryNumber, entryName))
+	print("New card: {}. {}".format(entryNumber, entryName))
 
 	# Feed the corresponding webpage using number
 	# If the digits of the number are < 3, do some string formatting
@@ -219,14 +184,3 @@ def scrapeMats(evoMatSection):
 	# Returns an array of parsed numbers in strings
 	return mats
 
-'''
-Saves dictionary to file
-'''
-def saveBook(debug):
-
-	if debug.debug_on:
-		print("Dictionary is complete. Saving dictionary...")
-
-	# Save this dictionary to a file
-	with open(BOOK_NAME, "wb") as f:
-		pickle.dump(cardBook, f)
