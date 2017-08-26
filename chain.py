@@ -174,12 +174,17 @@ def printResult(start, end, reqBook):
 	resStr = "To get from {} to {}, you need:\n".format(start.getName(), 
 		end.getName())
 
-	# More hard-coded goodness
+	# Just because we wanna see how many items are in here
+	total = 0
+
+	# Print out and add up stuff
 	for entry in reqBook.keys():
 		resStr += "{} {}\n".format(entry, reqBook[entry])
+		total += int(reqBook[entry])
 
 	# Print the final result. We earned it!
 	print(resStr)
+	print("Total amount of requirements: {}".format(total))
 
 
 
