@@ -66,9 +66,6 @@ def buildChain(end, start, book):
 			# Append the first link 
 			ID = end.getID()
 
-			while ID[0] == '0':
-				ID = ID[1:]
-
 			chainArr.append(book[ID])
 
 			# Obtain the previous evolution entry if we haven't seen the end
@@ -107,9 +104,6 @@ def iterReq(chainArr, book, reqBook):
 		# We only need the name of the current link, because that's our key
 		preLink = chainArr[entryIndex]
 		curLinkID = chainArr[entryIndex - 1].getID()
-
-		while curLinkID[0] == '0':
-			curLinkID = curLinkID[1:]
 
 		# Obtain the requirements to the next link from the current link
 		preReq = preLink.getPost()[curLinkID]
@@ -160,14 +154,16 @@ Prints a dictionary
 def printDict(book):
 	keys = sorted(book.keys())
 	for key in keys:
-		print("{}. {}".format(book[key].getID(), book[key].getName()))
+		print("{}".format(book[key].toString()))
+
+	print()
 
 '''
 Prints an array
 '''
 def printArr(arr):
 	for entry in arr:
-		print("{}. {}".format(entry.getID(), entry.getName()))
+		print("{}".format(entry.toString()))
 
 '''
 Prints the final results
@@ -199,7 +195,7 @@ def main(book):
 
 	possibleEnds(book, startingPoint, endpoints)
 
-	print("Possible endpoints:")
+	print("Possible endpoints:\n")
 	printDict(endpoints)
 
 	print("Please pick an endpoint.")
@@ -209,7 +205,6 @@ def main(book):
 		endpoint.getName()))
 
 	mainChain = buildChain(endpoint, startingPoint, book)
-	printArr(mainChain)
 
 	iterReq(mainChain, book, requirements)
 

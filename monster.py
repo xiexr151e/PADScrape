@@ -1,3 +1,7 @@
+'''
+The object class for this program
+'''
+
 from object import Object
 
 # Debug switch
@@ -103,23 +107,7 @@ class Monster:
 		return self.post		
 
 	'''
-	A search function - we use this to recursively search for stuff in a dictionary.
-	book - The dictionary itself.
-	arr - The array of things to print out.
-	freq - Array parallel to arr to keep track of frequency.
-	'''
-	def search(self, book, arr, freq):
-
-		
-		#Base case - return if no evolution beyond this point.
-		if len(self.evolutions) == 0:
-			return
-		
-		#Do the recursive search
-		#for i in range(len(self.evolutions)):
-
-	'''
 	Return a string representation of monster
 	'''
 	def toString(self):
-		print("{}: {}".format(self.getID(), self.getName()))
+		return "{}: {}".format(self.getID(), self.getName())

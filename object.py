@@ -1,3 +1,7 @@
+'''
+Unused for now
+'''
+
 from abc import ABC, abstractmethod
 
 class Object(ABC):
