@@ -107,6 +107,10 @@ def scrapeEntry(entryName, entryNumber):
 			# Redirect to another function if evolution is possible
 			evos = scrapeEvo(div.find_all('table', 'table mb-3'))
 
+	# Remember to remove the trailing 0 for storage purposes
+	while entryNumber[0] == '0':
+		entryNumber = entryNumber[1:]
+
 	# At the end, construct a card and return it
 	return Monster(entryName, entryNumber, pre_evo, evos)
 
@@ -122,6 +126,10 @@ def scrapePreEvo(preSection, entryNumber):
 		# in which we want the 'href' attribute alone
 		# In addition, parse the reference link
 		pre_evo = ul.find('a', href=True)['href'][2:]
+
+		# Removes trailing 0s to be safe
+		while pre_evo[0] == '0':
+			pre_evo = pre_evo[1:]
 
 		# Returns a parsed number
 		return pre_evo
@@ -161,7 +169,13 @@ Scrapes the evo name sub-section
 def scrapeEvoName(evoNameSection):
 
 	# Returns a parsed number in a string
-	return evoNameSection.a['href'][2:]
+	evo_name = evoNameSection.a['href'][2:]
+
+	# Removes trailing 0s to be safe
+	while evo_name[0] == '0':
+		evo_name = evo_name[1:]
+
+	return evo_name
 
 '''
 Scrapes the evo material sub-section
@@ -177,6 +191,10 @@ def scrapeMats(evoMatSection):
 		# Each href is a link to one material
 		# I parse this link to obtain its number
 		material = mat['href'][2:]
+
+		# Removes trailing 0s to be safe
+		while material[0] == '0':
+			material = material[1:]
 
 		# Call the nonlocal mats variable to append
 		mats.append(material)
