@@ -1,6 +1,7 @@
 '''
 Determines the chain and does the actual counting
 '''
+import English
 
 # Used to store endpoints
 endpoints = {}
@@ -121,7 +122,7 @@ def findReq(entry, book, reqBook):
 	entryObj = book[entry]
 
 	# Also obtain its name, which will be used to store within dictionary
-	entryName = entryObj.getName()
+	#entryName = entryObj.getName()
 
 	# Check if the object does not have a pre-req
 	# If it does not, then append directly; else, recursive calls and append
@@ -135,18 +136,15 @@ def findReq(entry, book, reqBook):
 		# Also reduce the entry to be its lowest form
 		while entryObj.getPre():
 			entryObj = book[entryObj.getPre()]
-			entryName = entryObj.getName()
+			#entryName = entryObj.getName()
 	
 	# Check for duplicates; if none, add new
 	# If any, add 1 to value
-	if entryName not in reqBook.keys():
-		reqBook[entryName] = 1
+	if entryObj not in reqBook.keys():
+		reqBook[entryObj] = 1
 
 	else:
-		reqBook[entryName] = reqBook[entryName] + 1
-
-
-
+		reqBook[entryObj] = reqBook[entryObj] + 1
 
 '''
 Prints a dictionary
@@ -154,7 +152,8 @@ Prints a dictionary
 def printDict(book):
 	keys = sorted(book.keys())
 	for key in keys:
-		print("{}".format(book[key].toString()))
+		print("{} ({})".format(book[key].toString(), 
+			English.translateEntry(book[key])))
 
 	print()
 
@@ -163,7 +162,8 @@ Prints an array
 '''
 def printArr(arr):
 	for entry in arr:
-		print("{}".format(entry.toString()))
+		print("{} ({})".format(entry.toString()),
+			English.translateEntry(entry))
 
 '''
 Prints the final results
@@ -171,15 +171,17 @@ Prints the final results
 def printResult(start, end, reqBook):
 
 	# The original string
-	resStr = "To get from {} to {}, you need:\n".format(start.getName(), 
-		end.getName())
+	resStr = "To get from {} ({}) to {} ({}), you need:\n".format(
+		start.getName(), English.translateEntry(start), 
+		end.getName(), English.translateEntry(end))
 
 	# Just because we wanna see how many items are in here
 	total = 0
 
 	# Print out and add up stuff
 	for entry in reqBook.keys():
-		resStr += "{} {}\n".format(entry, reqBook[entry])
+		resStr += "{}({}) x {}\n".format(entry.getName(), 
+			English.translateEntry(entry), reqBook[entry])
 		total += int(reqBook[entry])
 
 	# Print the final result. We earned it!
@@ -214,3 +216,5 @@ def main(book):
 	iterReq(mainChain, book, requirements)
 
 	printResult(startingPoint, endpoint, requirements)
+
+	return requirements

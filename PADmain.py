@@ -15,6 +15,9 @@ BOOK_NAME = "cardbook"
 # A common dictionary
 cardbook = {}
 
+# a results dictionary
+results = {}
+
 # Check for debug flag
 if "-x" in sys.argv:
 	filesys.debug = 1

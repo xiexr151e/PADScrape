@@ -78,6 +78,8 @@ def scrapeEntry(entryName, entryNumber):
 	pre_evo = None
 	evos = {}
 
+	# Find the alternate name for this entry
+	# Due to the format of the English site, we will do this first
 	# Just a debug statement
 	print("New card: {}. {}".format(entryNumber, entryName))
 
