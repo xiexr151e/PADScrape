@@ -1,5 +1,6 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
+#from BeautifulSoup import SoupStrainer
 
 # Exception: Exclude Crows collab and Voltron collab
 Crows = list(range(2601, 2636)) + list(range(3460, 3482))
@@ -28,9 +29,10 @@ def translateEntry(entry):
 	# Make a soup based on the PADx page
 	ENPage = "{}{}".format(EN_FORMAT, numCopy)
 	ENentry = requests.get(ENPage)
-	ENsoup = BeautifulSoup(ENentry.text, 'html.parser')
+	ENParser = SoupStrainer('div', {'class':'name'})
+	ENsoup = BeautifulSoup(ENentry.text, 'html.parser', parse_only = ENParser)
 
 	# Find the name and return it
-	EN_name = ENsoup.find('div','name').text.strip()
+	EN_name = ENsoup.text.strip()
 
 	return EN_name

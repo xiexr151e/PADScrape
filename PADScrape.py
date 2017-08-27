@@ -5,6 +5,7 @@ The scraper
 import requests
 from bs4 import BeautifulSoup
 from monster import Monster
+import multiprocessing
 
 # Constants
 LIMIT = 3879 # Presently the last number in the PAD JP
