@@ -5,7 +5,7 @@ The scraper
 import requests
 from bs4 import BeautifulSoup
 from monster import Monster
-import multiprocessing
+from multiprocessing import Pool
 
 # Constants
 LIMIT = 3903 # Presently the last number in the PAD JP
@@ -27,6 +27,9 @@ Main scrape function, used to scrape the entire website
 '''
 def scrape(book):
 
+	bookList = []
+
+	'''
 	# Iterate over every page; add 1 to lastPage because the second
 	# number is excluded from the iteration
 
@@ -39,15 +42,28 @@ def scrape(book):
 	newLen = len(book)
 
 	print("{} new monsters added.".format(newLen - oldLen))
+	'''
+
+	# First, create a list of pages to go over
+	for currentPage in range(firstPage, lastPage + 1):
+		bookList.append("{}{}".format(PAGE_FORMAT, currentPage))
+
+	# Multiprocessing for each index page
+	pagePool = Pool(lastPage - firstPage + 1)
+	pagePool.map(scrapePage(bookList, book), (bookList, book))
+	pagePool.terminate()
+	pagePool.join()
 
 '''
 Scrapes each page of the "table of contents" of the website
 '''
-def scrapePage(pageNumber, book):
+def scrapePage(page, book):
 
-	# Alternate webpage in each for loop
-	PADpage = "{}{}".format(PAGE_FORMAT, pageNumber)
-	index = requests.get(PADpage)
+	entries = []
+	names = []
+	numbers = []
+
+	index = requests.get(page)
 	indexSoup = BeautifulSoup(index.text, 'html.parser')
 
 	# Find numbers and names within a specific region of the HTML file
@@ -63,12 +79,23 @@ def scrapePage(pageNumber, book):
 			# If entry is new and known, then gather some more info
 			if number not in book.keys() and name != UNKNOWN:
 
+				entries.append("{}{}".format(ENTRY_FORMAT, number))
+				names.append(name)
+				numbers.append(number)
+
 				# Redirect to next function, which will help
 				# to construct a new card
-				newMonster = scrapeEntry(name, number)
+				#newMonster = scrapeEntry(name, number)
 
 				# Append this new card into the dictionary
-				book[number] = newMonster
+				#book[number] = newMonster
+
+	# Multiprocessing for each entry
+	entryPool = Pool(len(entries))
+	book[number] = entryPool.map(scrapeEntry(names, numbers), (names, numbers))
+	entryPool.terminate()
+	entryPool.join()
+
 
 '''
 Scrapes individual entries within each page
