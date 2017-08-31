@@ -2,6 +2,7 @@
 Determines the chain and does the actual counting
 '''
 import English
+from multiprocessing import Pool
 
 # Used to store endpoints
 endpoints = {}

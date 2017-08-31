@@ -8,7 +8,7 @@ from monster import Monster
 import multiprocessing
 
 # Constants
-LIMIT = 3879 # Presently the last number in the PAD JP
+LIMIT = 3903 # Presently the last number in the PAD JP
 cardPerPage = 100 # Number of cards per page, if all cards are known
 firstPage = 1
 

@@ -35,4 +35,8 @@ def translateEntry(entry):
 	# Find the name and return it
 	EN_name = ENsoup.text.strip()
 
+	# Check if the English text exists
+	if not ENsoup or not ENPage or not ENentry or not EN_name:
+		return entry.getName()
+
 	return EN_name
