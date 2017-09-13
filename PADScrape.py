@@ -5,7 +5,8 @@ The scraper
 import requests
 from bs4 import BeautifulSoup
 from monster import Monster
-from multiprocessing import Pool
+import multiprocessing
+from functools import partial
 
 # Constants
 LIMIT = 3903 # Presently the last number in the PAD JP
@@ -37,7 +38,7 @@ def scrape(book):
 
 	for currentPage in range(firstPage, lastPage + 1):
 	#for currentPage in range(38, 39):
-		scrapePage(currentPage, book)
+		scrapePage(currentPage, book)                                                                                       
 
 	newLen = len(book)
 
@@ -49,19 +50,25 @@ def scrape(book):
 		bookList.append("{}{}".format(PAGE_FORMAT, currentPage))
 
 	# Multiprocessing for each index page
-	pagePool = Pool(lastPage - firstPage + 1)
-	pagePool.map(scrapePage(bookList, book), (bookList, book))
+	pagePool = multiprocessing.Pool(lastPage - firstPage + 1)
+
+	pagePool.map(partial(scrapePage, book = book), bookList)
 	pagePool.terminate()
 	pagePool.join()
+
+	print(book)
+
+	'''
+	with multiprocessing.Pool(lastPage - firstPage + 1) as pagePool:
+		pagePool.map(partial(scrapePage, book = book), bookList)
+	'''
 
 '''
 Scrapes each page of the "table of contents" of the website
 '''
 def scrapePage(page, book):
 
-	entries = []
-	names = []
-	numbers = []
+	print("Starting: {}".format(page))
 
 	index = requests.get(page)
 	indexSoup = BeautifulSoup(index.text, 'html.parser')
@@ -79,22 +86,26 @@ def scrapePage(page, book):
 			# If entry is new and known, then gather some more info
 			if number not in book.keys() and name != UNKNOWN:
 
-				entries.append("{}{}".format(ENTRY_FORMAT, number))
-				names.append(name)
-				numbers.append(number)
-
 				# Redirect to next function, which will help
 				# to construct a new card
-				#newMonster = scrapeEntry(name, number)
+				newMonster = scrapeEntry(name, number)
 
 				# Append this new card into the dictionary
-				#book[number] = newMonster
+				book[number] = newMonster
+
+	print("Ending: {}".format(page))
+
+	return
+
+				#entries[number] = name
 
 	# Multiprocessing for each entry
-	entryPool = Pool(len(entries))
-	book[number] = entryPool.map(scrapeEntry(names, numbers), (names, numbers))
+	'''
+	entryPool = Pool(len(entries.keys()))
+	book[number] = entryPool.map(scrapeEntry, entries)
 	entryPool.terminate()
 	entryPool.join()
+	'''
 
 
 '''
