@@ -23,12 +23,19 @@ UNKNOWN = "不明"
 EVOLVE = "進化合成"
 UEVO = "究極進化"
 
+# Global dictionary
+PADbook = {}
+
 '''
 Main scrape function, used to scrape the entire website
 '''
 def scrape(book):
 
 	bookList = []
+
+	# Copy global dictionary
+	global PADbook
+	PADbook = book
 
 	'''
 	# Iterate over every page; add 1 to lastPage because the second
@@ -52,11 +59,12 @@ def scrape(book):
 	# Multiprocessing for each index page
 	pagePool = multiprocessing.Pool(lastPage - firstPage + 1)
 
-	pagePool.map(partial(scrapePage, book = book), bookList)
-	pagePool.terminate()
-	pagePool.join()
-
-	print(book)
+	try:
+		pageList = pagePool.map(scrapePage, bookList)
+		for page in pageList:
+			book.update(page)
+	except:
+		pass
 
 	'''
 	with multiprocessing.Pool(lastPage - firstPage + 1) as pagePool:
@@ -66,7 +74,9 @@ def scrape(book):
 '''
 Scrapes each page of the "table of contents" of the website
 '''
-def scrapePage(page, book):
+def scrapePage(page):
+
+	thisPage = {}
 
 	print("Starting: {}".format(page))
 
@@ -84,18 +94,19 @@ def scrapePage(page, book):
 			name = li.find('div', 'name').text.strip()
 
 			# If entry is new and known, then gather some more info
-			if number not in book.keys() and name != UNKNOWN:
+			global PADbook
+			if number not in PADbook.keys() and name != UNKNOWN:
 
 				# Redirect to next function, which will help
 				# to construct a new card
 				newMonster = scrapeEntry(name, number)
 
 				# Append this new card into the dictionary
-				book[number] = newMonster
+				thisPage[number] = newMonster
 
 	print("Ending: {}".format(page))
 
-	return
+	return thisPage
 
 				#entries[number] = name
 

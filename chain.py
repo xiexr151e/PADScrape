@@ -152,9 +152,17 @@ Prints a dictionary
 '''
 def printDict(book):
 	keys = sorted(book.keys())
-	for key in keys:
+
+	engPool = Pool(5)
+
+	engList = engPool.map(English.translateEntry, keys)
+
+	for key in range(len(keys)):
+		'''
 		print("{} ({})".format(book[key].toString(), 
 			English.translateEntry(book[key])))
+		'''
+		print("{} ({})".format(keys[key], engList[key]))
 
 	print()
 
