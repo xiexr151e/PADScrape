@@ -15,16 +15,19 @@ May fail on certain exclusives and collabs and etc. Sorry.
 '''
 def translateEntry(entry):
 
+	# Check for one
 	if not entry:
 		print("Can't translate this.")
 		return
+
+	numCopy = entry.getID()
 	
 	# Exception for one collab
-	if int(entry) in Crows:
-		entry = '1' + entry
+	if int(numCopy) in Crows:
+		numCopy = '1' + numCopy
 
 	# Make a soup based on the PADx page
-	ENPage = "{}{}".format(EN_FORMAT, entry)
+	ENPage = "{}{}".format(EN_FORMAT, numCopy)
 	ENentry = requests.get(ENPage)
 	ENParser = SoupStrainer('div', {'class':'name'})
 	ENsoup = BeautifulSoup(ENentry.text, 'html.parser', parse_only = ENParser)

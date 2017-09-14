@@ -122,9 +122,6 @@ def findReq(entry, book, reqBook):
 	# Obtain the entry object, by using entry which is also a key
 	entryObj = book[entry]
 
-	# Also obtain its name, which will be used to store within dictionary
-	#entryName = entryObj.getName()
-
 	# Check if the object does not have a pre-req
 	# If it does not, then append directly; else, recursive calls and append
 
@@ -151,20 +148,20 @@ def findReq(entry, book, reqBook):
 Prints a dictionary
 '''
 def printDict(book):
-	keys = sorted(book.keys())
 
+	# Prepare a list we need for translation
+	values = list(book.values())
+
+	# Multiprocessing pool
 	engPool = Pool(5)
+	engList = engPool.map(English.translateEntry, values)
 
-	engList = engPool.map(English.translateEntry, book)
-
-	print(engList)
-
-	'''
-	for key in range(len(keys)):
-		print("{} ({})".format(book[key].toString(), 
-			English.translateEntry(book[key])))
-		print("{} ({})".format(keys[key], engList[key]))
-		'''
+	# Print a dictionary alonside an array
+	printCount = 0
+	for entry in values:
+		print("{} ({})".format(entry.toString(), 
+			engList[printCount]))
+		printCount += 1
 
 	print()
 
@@ -174,38 +171,27 @@ Prints the final results
 def printResult(start, end, reqBook):
 
 	# The original string
-	resStr = "To get from {} ({}) to {} ({}), you need:\n".format(
-		start.getName(), English.translateEntry(start.getID()), 
-		end.getName(), English.translateEntry(end.getID()))
+	resStr = "To get from {} ({}) to {} ({}), you need:\n\n".format(
+		start.getName(), English.translateEntry(start), 
+		end.getName(), English.translateEntry(end))
 
 	# Just because we wanna see how many items are in here
 	total = 0
 
 	# Multiprocessing pool
 	engPool = Pool(5)
-
-	numBook = []
-	for entry in reqBook.keys():
-		numBook.append(entry.getID())
-
-	print(numBook)
-
-	engList = engPool.map(English.translateEntry, numBook)
+	engList = engPool.map(English.translateEntry, reqBook)
 	printCount = 0
 
-	print(engList)
-
 	# Print out and add up stuff
-	'''
 	for entry in reqBook.keys():
 		resStr += "{}({}) x {}\n".format(entry.getName(), 
 			engList[printCount], reqBook[entry])
 		printCount += 1
 		total += int(reqBook[entry])
-	'''
 
 	# Print the final result. We earned it!
-	#print(resStr)
+	print(resStr)
 	print("Total amount of requirements: {}".format(total))
 
 
@@ -215,26 +201,31 @@ The sequence of events
 '''
 def main(book):
 
+	# Prompt user for starting point
 	print("Please pick a starting point.")
-
 	startingPoint = prompt(book)
 	print("Your starting point is {}.".format(startingPoint.getName()))
 
+	# Determine a list of endpoints
 	possibleEnds(book, startingPoint, endpoints)
+	# Delete the starting point. That is not an endpoint
+	endpoints.pop(startingPoint.getID())
 
+	# Print endpoints
 	print("Possible endpoints:\n")
 	printDict(endpoints)
 
+	# Prompt user for endpoint
 	print("Please pick an endpoint.")
 	endpoint = prompt(endpoints)
 
+	# Determine requirements
 	print("Checking from {} to {}...".format(startingPoint.getName(), 
 		endpoint.getName()))
-
 	mainChain = buildChain(endpoint, startingPoint, book)
-
 	iterReq(mainChain, book, requirements)
 
+	# Print final result
 	printResult(startingPoint, endpoint, requirements)
 
 	return requirements

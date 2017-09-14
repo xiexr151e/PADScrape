@@ -36,21 +36,7 @@ def scrape(book):
 	# Copy global dictionary
 	global PADbook
 	PADbook = book
-
-	'''
-	# Iterate over every page; add 1 to lastPage because the second
-	# number is excluded from the iteration
-
-	oldLen = len(book)
-
-	for currentPage in range(firstPage, lastPage + 1):
-	#for currentPage in range(38, 39):
-		scrapePage(currentPage, book)                                                                                       
-
-	newLen = len(book)
-
-	print("{} new monsters added.".format(newLen - oldLen))
-	'''
+	oldLen = len(PADbook)
 
 	# First, create a list of pages to go over
 	for currentPage in range(firstPage, lastPage + 1):
@@ -58,7 +44,6 @@ def scrape(book):
 
 	# Multiprocessing for each index page
 	pagePool = multiprocessing.Pool(lastPage - firstPage + 1)
-
 	try:
 		pageList = pagePool.map(scrapePage, bookList)
 		for page in pageList:
@@ -66,10 +51,8 @@ def scrape(book):
 	except:
 		pass
 
-	'''
-	with multiprocessing.Pool(lastPage - firstPage + 1) as pagePool:
-		pagePool.map(partial(scrapePage, book = book), bookList)
-	'''
+	# Tells us how many new monsters are added
+	print("{} new monsters added.".format(len(PADbook) - oldLen))
 
 '''
 Scrapes each page of the "table of contents" of the website
@@ -77,8 +60,6 @@ Scrapes each page of the "table of contents" of the website
 def scrapePage(page):
 
 	thisPage = {}
-
-	print("Starting: {}".format(page))
 
 	index = requests.get(page)
 	indexSoup = BeautifulSoup(index.text, 'html.parser')
@@ -104,19 +85,7 @@ def scrapePage(page):
 				# Append this new card into the dictionary
 				thisPage[number] = newMonster
 
-	print("Ending: {}".format(page))
-
 	return thisPage
-
-				#entries[number] = name
-
-	# Multiprocessing for each entry
-	'''
-	entryPool = Pool(len(entries.keys()))
-	book[number] = entryPool.map(scrapeEntry, entries)
-	entryPool.terminate()
-	entryPool.join()
-	'''
 
 
 '''
