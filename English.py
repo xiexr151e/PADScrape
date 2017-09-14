@@ -18,16 +18,13 @@ def translateEntry(entry):
 	if not entry:
 		print("Can't translate this.")
 		return
-
-	# Make a copy of number first
-	numCopy = entry.getID()
 	
 	# Exception for one collab
-	if int(numCopy) in Crows:
-		numCopy = '1' + numCopy
+	if int(entry) in Crows:
+		entry = '1' + entry
 
 	# Make a soup based on the PADx page
-	ENPage = "{}{}".format(EN_FORMAT, numCopy)
+	ENPage = "{}{}".format(EN_FORMAT, entry)
 	ENentry = requests.get(ENPage)
 	ENParser = SoupStrainer('div', {'class':'name'})
 	ENsoup = BeautifulSoup(ENentry.text, 'html.parser', parse_only = ENParser)

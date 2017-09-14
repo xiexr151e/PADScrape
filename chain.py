@@ -155,24 +155,18 @@ def printDict(book):
 
 	engPool = Pool(5)
 
-	engList = engPool.map(English.translateEntry, keys)
+	engList = engPool.map(English.translateEntry, book)
 
+	print(engList)
+
+	'''
 	for key in range(len(keys)):
-		'''
 		print("{} ({})".format(book[key].toString(), 
 			English.translateEntry(book[key])))
-		'''
 		print("{} ({})".format(keys[key], engList[key]))
+		'''
 
 	print()
-
-'''
-Prints an array
-'''
-def printArr(arr):
-	for entry in arr:
-		print("{} ({})".format(entry.toString()),
-			English.translateEntry(entry))
 
 '''
 Prints the final results
@@ -181,20 +175,37 @@ def printResult(start, end, reqBook):
 
 	# The original string
 	resStr = "To get from {} ({}) to {} ({}), you need:\n".format(
-		start.getName(), English.translateEntry(start), 
-		end.getName(), English.translateEntry(end))
+		start.getName(), English.translateEntry(start.getID()), 
+		end.getName(), English.translateEntry(end.getID()))
 
 	# Just because we wanna see how many items are in here
 	total = 0
 
+	# Multiprocessing pool
+	engPool = Pool(5)
+
+	numBook = []
+	for entry in reqBook.keys():
+		numBook.append(entry.getID())
+
+	print(numBook)
+
+	engList = engPool.map(English.translateEntry, numBook)
+	printCount = 0
+
+	print(engList)
+
 	# Print out and add up stuff
+	'''
 	for entry in reqBook.keys():
 		resStr += "{}({}) x {}\n".format(entry.getName(), 
-			English.translateEntry(entry), reqBook[entry])
+			engList[printCount], reqBook[entry])
+		printCount += 1
 		total += int(reqBook[entry])
+	'''
 
 	# Print the final result. We earned it!
-	print(resStr)
+	#print(resStr)
 	print("Total amount of requirements: {}".format(total))
 
 

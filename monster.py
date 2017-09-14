@@ -104,7 +104,13 @@ class Monster:
 				# The completed print statement here
 				print("To evolve {} into {}, you need: {}".format(self.name, evoName, evoStr))
 
-		return self.post		
+		return self.post
+
+	'''
+	Sets an alternate name
+	'''
+	def altName(self, name):
+		self.altName = name
 
 	'''
 	Return a string representation of monster
