@@ -30,6 +30,7 @@ cardbook = filesys.loadBook(BOOK_NAME)
 # If updating, terminate once complete
 if "-u" in sys.argv:
 	PADScrape.scrape(cardbook)
+	chain.main(cardbook)
 	filesys.saveBook(cardbook, BOOK_NAME)
 	sys.exit(0)
 

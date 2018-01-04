@@ -9,7 +9,7 @@ import multiprocessing
 from functools import partial
 
 # Constants
-LIMIT = 3903 # Presently the last number in the PAD JP
+LIMIT = 4132 # Presently the last number in the PAD JP
 cardPerPage = 100 # Number of cards per page, if all cards are known
 firstPage = 1
 
@@ -30,6 +30,10 @@ PADbook = {}
 Main scrape function, used to scrape the entire website
 '''
 def scrape(book):
+
+	# As a debug test, remove entry for Awoken Archangel Lucifer
+	print("Removing {}".format(book["3716"].getName()))
+	del book["3716"]
 
 	bookList = []
 
@@ -80,7 +84,11 @@ def scrapePage(page):
 
 				# Redirect to next function, which will help
 				# to construct a new card
-				newMonster = scrapeEntry(name, number)
+				newMonster = scrapeEntry(name, number, False)
+				
+				# A bug.
+				print("Appending {}".format(newMonster.getName()))
+				print(newMonster.getPost())
 
 				# Append this new card into the dictionary
 				thisPage[number] = newMonster
@@ -91,7 +99,7 @@ def scrapePage(page):
 '''
 Scrapes individual entries within each page
 '''
-def scrapeEntry(entryName, entryNumber):
+def scrapeEntry(entryName, entryNumber, fromPre):
 
 	# Empty variables used to help construct the card
 	pre_evo = None
@@ -114,7 +122,7 @@ def scrapeEntry(entryName, entryNumber):
 
 	# Redirect to find a pre-evolution, if any
 	pre_evo = scrapePreEvo(entrySoup.find_all('ul','list-media-mim-full'), 
-		entryNumber)
+		entryNumber, fromPre)
 
 	# Finding a tag in a sea of tags
 	for div in entrySoup.find_all('div','spacer mb-5'):
@@ -138,7 +146,7 @@ def scrapeEntry(entryName, entryNumber):
 '''
 Scrapes only the pre-evo section
 '''
-def scrapePreEvo(preSection, entryNumber):
+def scrapePreEvo(preSection, entryNumber, fromPre):
 
 	# Pre-evo info; only found in this section
 	for ul in preSection:
@@ -151,6 +159,14 @@ def scrapePreEvo(preSection, entryNumber):
 		# Removes trailing 0s to be safe
 		while pre_evo[0] == '0':
 			pre_evo = pre_evo[1:]
+			
+		# Should a monster update to have an evolution, pop and scrape again
+		global PADbook
+		if pre_evo in PADbook.keys() and not fromPre:
+			oldName = PADbook[pre_evo].getName()
+			del PADbook[pre_evo]
+			print("Removing {} from the book temporarily.".format(oldName))
+			scrapeEntry(oldName, pre_evo, True)
 
 		# Returns a parsed number
 		return pre_evo
